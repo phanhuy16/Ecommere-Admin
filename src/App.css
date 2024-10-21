@@ -1,0 +1,77 @@
+.ant-menu-title-content a:hover {
+  text-decoration: none;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  font: inherit;
+}
+
+img,
+picture,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+select,
+textarea {
+  background-color: transparent;
+  outline: none;
+}
+
+button {
+  cursor: pointer;
+  background-color: transparent;
+  outline: none;
+  border: 0;
+}
+
+body {
+  min-height: 100vh;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1;
+}
+
+a {
+  text-decoration: none !important;
+}
+
+.icon-wapper {
+  width: 38px;
+  width: 38px;
+  padding: 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+}
+
+.ant-card-body {
+  padding: 16px !important;
+}
+
+.text {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
+}
+
+.filter-card {
+  -webkit-box-shadow: 0px 9px 29px -17px rgba(66, 68, 90, 1);
+  -moz-box-shadow: 0px 9px 29px -17px rgba(66, 68, 90, 1);
+  box-shadow: 0px 9px 29px -17px rgba(66, 68, 90, 1);
+}
