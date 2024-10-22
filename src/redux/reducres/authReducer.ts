@@ -9,7 +9,7 @@ export interface AuthState {
 
 const initialState = {
   token: '',
-  role: "User"
+  role: "Admin"
 }
 
 const authSlice = createSlice({
