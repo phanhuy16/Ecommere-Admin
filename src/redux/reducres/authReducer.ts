@@ -21,6 +21,8 @@ const authSlice = createSlice({
       state.data = action.payload;
       syncLocal(action.payload);
     },
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     removeAuth: (state, _action) => {
       state.data = initialState;
       syncLocal({});

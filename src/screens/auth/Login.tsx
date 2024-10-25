@@ -33,7 +33,9 @@ const Login = () => {
         message.error(res.value.message);
       } else {
         message.success(res.value.message);
-        res.value && dispatch(addAuth(res.value));
+        if (res.value) {
+          dispatch(addAuth(res.value));
+        }
       }
 
       if (isRemember) {
