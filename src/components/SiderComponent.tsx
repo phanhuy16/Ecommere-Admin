@@ -1,7 +1,7 @@
 import { appInfo } from "@/constants/appInfo";
 import { colors } from "@/constants/color";
 import { Layout, Menu, MenuProps, Typography } from "antd";
-import { Box } from "iconsax-react";
+import { Box, PercentageSquare } from "iconsax-react";
 import { FaTags } from "react-icons/fa";
 import { GiChart } from "react-icons/gi";
 import { GoChecklist } from "react-icons/go";
@@ -60,6 +60,11 @@ const SiderComponent = () => {
       key: "manage store",
       label: <Link to={"/manage-store"}>Manage Store</Link>,
       icon: <GoChecklist size={18} />,
+    },
+    {
+      key: "promotion",
+      label: <Link to={"/promotion"}>Promotion</Link>,
+      icon: <PercentageSquare size={18} />,
     },
   ];
 

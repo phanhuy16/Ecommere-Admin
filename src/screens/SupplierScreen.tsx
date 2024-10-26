@@ -133,7 +133,9 @@ const SupplierScreen = () => {
       <ToogleSupplier
         visible={isVisibleModalAddNew}
         onClose={() => {
-          supplierSelected && getSuppliers();
+          if (supplierSelected) {
+            getSuppliers();
+          }
           setIsVisibleModalAddNew(false);
           setSupplierSelected(undefined);
         }}

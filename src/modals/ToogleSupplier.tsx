@@ -152,7 +152,7 @@ const ToogleSupplier = (props: Props) => {
           layout={formData.layout}
           labelCol={{ span: formData.labelCol }}
           wrapperCol={{ span: formData.wrapperCol }}
-          size="large"
+          size="middle"
           form={form}
         >
           {formData.formItem.map((item) => (

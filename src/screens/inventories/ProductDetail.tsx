@@ -26,6 +26,8 @@ const ProductDetail = () => {
   const [subProduct, setSubProduct] = useState<SubProductModel[]>([]);
   const [productSelected, setProductSelected] = useState<ProductModel>();
   const [isVisibleAddSubProduct, setIsVisibleAddSubProduct] = useState(false);
+  const [subProductSelected, setSubProductSelected] =
+    useState<SubProductModel>();
 
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
@@ -81,7 +83,10 @@ const ProductDetail = () => {
       dataIndex: "images",
       render: (imgs: string[]) => (
         <Space>
-          {imgs.length > 0 && imgs.map((img) => <Avatar src={img} size={40} />)}{" "}
+          {imgs
+            ? imgs.length > 0 &&
+              imgs.map((img) => <Avatar src={img} size={40} />)
+            : null}
         </Space>
       ),
     },
@@ -107,6 +112,14 @@ const ProductDetail = () => {
       align: "right",
     },
     {
+      key: "discount",
+      title: "Discount",
+      dataIndex: "discount",
+      render: (discount: number) =>
+        discount ? discount.toLocaleString() : null,
+      align: "right",
+    },
+    {
       key: "stock",
       title: "stock",
       dataIndex: "qty",
@@ -121,6 +134,10 @@ const ProductDetail = () => {
           <Tooltip title="Edit">
             <Button
               type="text"
+              onClick={() => {
+                setSubProductSelected(item);
+                setIsVisibleAddSubProduct(true);
+              }}
               icon={
                 <Edit2 variant="Bold" color={colors.primary500} size={18} />
               }
@@ -176,8 +193,9 @@ const ProductDetail = () => {
             setIsVisibleAddSubProduct(false);
             setProductSelected(undefined);
           }}
+          subProduct={subProductSelected}
           onAddNew={async (_val) => {
-            getProductDetail();
+            await getProductDetail();
           }}
         />
       )}

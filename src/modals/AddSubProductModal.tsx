@@ -1,7 +1,7 @@
 import handleAPI from "@/apis/handleAPI";
 import { colors } from "@/constants/color";
 import { ProductModel, SubProductModel } from "@/models/Products";
-import { handleResize, uploadFile } from "@/utils/uploadFile";
+import { uploadFile } from "@/utils/uploadFile";
 import {
   ColorPicker,
   Form,
@@ -21,10 +21,11 @@ interface Props {
   onClose: () => void;
   product?: ProductModel;
   onAddNew: (val: SubProductModel) => void;
+  subProduct?: SubProductModel;
 }
 
 const AddSubProductModal = (props: Props) => {
-  const { visible, onClose, product, onAddNew } = props;
+  const { visible, onClose, product, onAddNew, subProduct } = props;
 
   const [isLoading, setIsLoading] = useState(false);
   const [fileList, setFileList] = useState<any[]>([]);
@@ -35,7 +36,20 @@ const AddSubProductModal = (props: Props) => {
 
   useEffect(() => {
     form.setFieldValue("color", colors.primary500);
-  }, []);
+  }, [form]);
+
+  useEffect(() => {
+    if (subProduct) {
+      form.setFieldsValue(subProduct);
+
+      if (subProduct.images && subProduct.images.length > 0) {
+        const items = subProduct.images.map((item) => ({
+          url: item,
+        }));
+        setFileList(items);
+      }
+    }
+  }, [subProduct, form]);
 
   const handleAddSubProduct = async (values: any) => {
     if (product) {
@@ -55,9 +69,17 @@ const AddSubProductModal = (props: Props) => {
 
       setIsLoading(true);
 
-      const api = `/Products/add-sub-product`;
+      const api = `/Products/${
+        subProduct
+          ? `update-sub-product?id=${subProduct.id}`
+          : "add-sub-product"
+      }`;
       try {
-        const res: any = await handleAPI(api, data, "post");
+        const res: any = await handleAPI(
+          api,
+          data,
+          subProduct ? "put" : "post"
+        );
 
         await uploadFileForId(res.data.id, data);
 
@@ -83,7 +105,6 @@ const AddSubProductModal = (props: Props) => {
           return url;
         });
 
-        console.log(`Sub ID for upload: ${subId}`);
         // Đợi tất cả các ảnh được tải lên
         const urls = await Promise.all(uploadPromises);
 
@@ -122,7 +143,7 @@ const AddSubProductModal = (props: Props) => {
 
   return (
     <Modal
-      title="Add Sub Product"
+      title={subProduct ? "Update Sub Product" : "Add Sub Product"}
       open={visible}
       onCancel={handleCancel}
       onClose={handleCancel}
@@ -160,6 +181,11 @@ const AddSubProductModal = (props: Props) => {
           </div>
           <div className="col">
             <Form.Item name="price" label="Price">
+              <InputNumber style={{ width: "100%" }} />
+            </Form.Item>
+          </div>
+          <div className="col">
+            <Form.Item name="discount" label="Discount">
               <InputNumber style={{ width: "100%" }} />
             </Form.Item>
           </div>

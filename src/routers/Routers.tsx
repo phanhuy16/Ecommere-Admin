@@ -18,7 +18,9 @@ const Routers = () => {
 
   const getData = async () => {
     const res = localStorage.getItem(localDataNames.authData);
-    res && dispatch(addAuth(JSON.parse(res)));
+    if (res) {
+      dispatch(addAuth(JSON.parse(res)));
+    }
   };
 
   return isLoading ? <Spin /> : !auth.token ? <AuthRouter /> : <MainRouter />;

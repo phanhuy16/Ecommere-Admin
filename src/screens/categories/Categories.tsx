@@ -39,7 +39,7 @@ const Categories = () => {
 
   useEffect(() => {
     getAllCategories();
-    // getCategories(`/Categories/get-pagination`, true);
+    getCategories(`/Categories/get-pagination`, true);
   }, []);
 
   useEffect(() => {

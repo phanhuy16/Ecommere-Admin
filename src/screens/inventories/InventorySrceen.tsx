@@ -397,7 +397,9 @@ const InventoryScreen = () => {
               <Button icon={<Sort size={20} />}>Filter</Button>
             </Dropdown>
             <Divider type="vertical" />
-            <Button type="primary">Add Product</Button>
+            <Link to={"/inventory/add-product"}>
+              <Button type="primary">Add Product</Button>
+            </Link>
           </Space>
         </div>
       </div>

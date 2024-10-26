@@ -5,10 +5,11 @@ import {
   AddProduct,
   Categories,
   CategoryDetail,
-  InventorySrceen,
+  InventoryScreen,
   ManageStoreScreen,
   OrderScreen,
   ProductDetail,
+  PromotionScreen,
   ReportScreen,
   SupplierScreen,
 } from "@/screens";
@@ -31,7 +32,7 @@ const MainRouter = () => {
             <Routes>
               <Route path="/" element={<HomeScreen />} />
               <Route>
-                <Route path="/inventory" element={<InventorySrceen />} />
+                <Route path="/inventory" element={<InventoryScreen />} />
                 <Route path="/inventory/add-product" element={<AddProduct />} />
                 <Route
                   path="/inventory/detail/:slug"
@@ -49,6 +50,7 @@ const MainRouter = () => {
                 />
               </Route>
               <Route path="/manage-store" element={<ManageStoreScreen />} />
+              <Route path="/promotion" element={<PromotionScreen />} />
             </Routes>
           </Content>
           <Footer />
