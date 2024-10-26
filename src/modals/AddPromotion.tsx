@@ -1,4 +1,5 @@
 import handleAPI from "@/apis/handleAPI";
+import { PromotionModel } from "@/models/PromotionModel";
 import { uploadFile } from "@/utils/uploadFile";
 import {
   DatePicker,
@@ -10,22 +11,37 @@ import {
   Upload,
   UploadProps,
 } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import dayjs from "dayjs";
 
 interface Props {
   visible: boolean;
   onClose: () => void;
-  promotion?: any;
-  onAddNew: (val: any) => void;
+  promotion?: PromotionModel;
+  onAddNew: (val: PromotionModel) => void;
 }
 
 const AddPromotion = (props: Props) => {
-  const { visible, onClose, onAddNew } = props;
+  const { visible, onClose, onAddNew, promotion } = props;
 
   const [form] = Form.useForm();
 
   const [imageUpload, setImageUpload] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (promotion) {
+      form.setFieldsValue({
+        ...promotion,
+        startAt: dayjs(promotion.startAt),
+        endAt: dayjs(promotion.endAt),
+      });
+
+      if (promotion.imageURL) {
+        setImageUpload([{ url: promotion.imageURL, status: "done" }]);
+      }
+    }
+  }, [promotion, form]);
 
   const handleClose = () => {
     form.resetFields();
@@ -71,11 +87,13 @@ const AddPromotion = (props: Props) => {
             ? await uploadFile(imageUpload[0].originFileObj)
             : "";
 
-        const api = "/Promotion/add-new";
+        const api = `/Promotion/${
+          promotion ? `update?id=${promotion.id}` : "add-new"
+        }`;
         setIsLoading(true);
 
         try {
-          const res = await handleAPI(api, data, "post");
+          const res = await handleAPI(api, data, promotion ? "put" : "post");
           onAddNew(res.data);
           handleClose();
         } catch (error) {
@@ -89,7 +107,9 @@ const AddPromotion = (props: Props) => {
 
   return (
     <Modal
-      title="Add new promotion/discount"
+      title={
+        promotion ? "Update promotion/discount" : "Add new promotion/discount"
+      }
       open={visible}
       onClose={handleClose}
       onCancel={handleClose}
