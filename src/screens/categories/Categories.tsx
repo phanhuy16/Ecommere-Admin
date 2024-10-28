@@ -252,7 +252,7 @@ const Categories = () => {
   };
 
   return isLoading ? (
-    <Spin />
+    <Spin fullscreen />
   ) : (
     <div>
       <div className="container-fluid">

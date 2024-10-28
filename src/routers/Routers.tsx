@@ -23,7 +23,13 @@ const Routers = () => {
     }
   };
 
-  return isLoading ? <Spin /> : !auth.token ? <AuthRouter /> : <MainRouter />;
+  return isLoading ? (
+    <Spin fullscreen />
+  ) : !auth.token ? (
+    <AuthRouter />
+  ) : (
+    <MainRouter />
+  );
 };
 
 export default Routers;

@@ -118,7 +118,7 @@ const PromotionScreen = () => {
   return (
     <div>
       {isLoading ? (
-        <Spin />
+        <Spin fullscreen />
       ) : (
         <>
           <div className="container-fluid">
@@ -138,7 +138,10 @@ const PromotionScreen = () => {
 
       <AddPromotion
         promotion={promotionSelected}
-        onAddNew={async (val) => await getPromotions()}
+        onAddNew={async (val) => {
+          await getPromotions();
+          console.log(val);
+        }}
         visible={isVisibleModalAddPromotion}
         onClose={() => setIsVisibleModalAddPromotion(false)}
       />

@@ -60,14 +60,28 @@ const AddSubProductModal = (props: Props) => {
 
       data.product_Id = product.id;
 
+      // Kiểm tra nếu có file ảnh
+      if (fileList.length > 0) {
+        const uploadPromises = fileList.map(async (file) => {
+          const url = await uploadFile(file.originFileObj);
+          return url;
+        });
+
+        // Đợi tất cả các ảnh được tải lên
+        const urls = await Promise.all(uploadPromises);
+
+        // Gán các URL đã upload vào data
+        data.images = urls.filter((url) => url);
+      }
+
       if (data.color) {
         data.color =
           typeof data.color === "string"
             ? data.color
             : data.color.toHexString();
       }
-
       setIsLoading(true);
+      console.log(data);
 
       const api = `/Products/${
         subProduct
@@ -81,9 +95,11 @@ const AddSubProductModal = (props: Props) => {
           subProduct ? "put" : "post"
         );
 
-        await uploadFileForId(res.data.id, data);
+        console.log(res);
 
-        message.success(res.message);
+        // await uploadFileForId(res.data.id, data);
+
+        message.success("Add success");
         onAddNew(res);
         handleCancel();
       } catch (error) {
@@ -96,30 +112,30 @@ const AddSubProductModal = (props: Props) => {
     }
   };
 
-  const uploadFileForId = async (subId: string, data: any) => {
-    try {
-      if (fileList.length > 0) {
-        const uploadPromises = fileList.map(async (file) => {
-          const url = await uploadFile(file.originFileObj);
-          console.log(`Uploaded file: ${url}`);
-          return url;
-        });
+  // const uploadFileForId = async (subId: string, data: any) => {
+  //   try {
+  //     if (fileList.length > 0) {
+  //       const uploadPromises = fileList.map(async (file) => {
+  //         const url = await uploadFile(file.originFileObj);
+  //         console.log(`Uploaded file: ${url}`);
+  //         return url;
+  //       });
 
-        // Đợi tất cả các ảnh được tải lên
-        const urls = await Promise.all(uploadPromises);
+  //       // Đợi tất cả các ảnh được tải lên
+  //       const urls = await Promise.all(uploadPromises);
 
-        if (urls.length > 0) {
-          await handleAPI(
-            `/Products/update-sub-product?id=${subId}`,
-            { images: urls.filter((url) => url), ...data },
-            "put"
-          );
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //       if (urls.length > 0) {
+  //         await handleAPI(
+  //           `/Products/update-sub-product?id=${subId}`,
+  //           { images: urls.filter((url) => url), ...data },
+  //           "put"
+  //         );
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const handleCancel = () => {
     form.resetFields();

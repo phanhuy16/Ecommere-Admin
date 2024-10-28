@@ -87,13 +87,18 @@ const AddPromotion = (props: Props) => {
             ? await uploadFile(imageUpload[0].originFileObj)
             : "";
 
+        console.log(data);
+
         const api = `/Promotion/${
           promotion ? `update?id=${promotion.id}` : "add-new"
         }`;
         setIsLoading(true);
-
         try {
-          const res = await handleAPI(api, data, promotion ? "put" : "post");
+          const res: any = await handleAPI(
+            api,
+            data,
+            promotion ? "put" : "post"
+          );
           onAddNew(res.data);
           handleClose();
         } catch (error) {

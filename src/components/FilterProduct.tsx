@@ -110,7 +110,7 @@ const FilterProduct = (props: Props) => {
       size="small"
     >
       {isLoading ? (
-        <Spin />
+        <Spin fullscreen />
       ) : selectDatas ? (
         <>
           <Form form={form} layout="vertical" onFinish={handleFilter}>

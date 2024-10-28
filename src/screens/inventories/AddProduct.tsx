@@ -191,7 +191,7 @@ const AddProduct = () => {
   };
 
   return isLoading ? (
-    <Spin />
+    <Spin fullscreen />
   ) : (
     <div>
       <div className="container">
