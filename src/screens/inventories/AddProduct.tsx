@@ -116,7 +116,7 @@ const AddProduct = () => {
       ? values.categories.map((categoryId: any) => ({ categoryId }))
       : [];
 
-    let urls: string[] = [];
+    const urls: string[] = [];
     // Kiểm tra nếu có file ảnh
     if (fileList.length > 0) {
       const uploadPromises = fileList.map(async (file) => {
@@ -354,7 +354,9 @@ const AddProduct = () => {
 
                     if (file) {
                       const donwloadUrl = await uploadFile(file);
-                      donwloadUrl && setFileUrl(donwloadUrl);
+                      if (donwloadUrl) {
+                        setFileUrl(donwloadUrl);
+                      }
                     }
                   }}
                 />
