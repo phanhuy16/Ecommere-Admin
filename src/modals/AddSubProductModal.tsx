@@ -97,7 +97,7 @@ const AddSubProductModal = (props: Props) => {
 
         console.log(res);
 
-        // await uploadFileForId(res.data.id, data);
+        await uploadFileForId(res.data.id, data);
 
         message.success("Add success");
         onAddNew(res);
@@ -112,30 +112,30 @@ const AddSubProductModal = (props: Props) => {
     }
   };
 
-  // const uploadFileForId = async (subId: string, data: any) => {
-  //   try {
-  //     if (fileList.length > 0) {
-  //       const uploadPromises = fileList.map(async (file) => {
-  //         const url = await uploadFile(file.originFileObj);
-  //         console.log(`Uploaded file: ${url}`);
-  //         return url;
-  //       });
+  const uploadFileForId = async (subId: string, data: any) => {
+    try {
+      if (fileList.length > 0) {
+        const uploadPromises = fileList.map(async (file) => {
+          const url = await uploadFile(file.originFileObj);
+          console.log(`Uploaded file: ${url}`);
+          return url;
+        });
 
-  //       // Đợi tất cả các ảnh được tải lên
-  //       const urls = await Promise.all(uploadPromises);
+        // Đợi tất cả các ảnh được tải lên
+        const urls = await Promise.all(uploadPromises);
 
-  //       if (urls.length > 0) {
-  //         await handleAPI(
-  //           `/Products/update-sub-product?id=${subId}`,
-  //           { images: urls.filter((url) => url), ...data },
-  //           "put"
-  //         );
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+        if (urls.length > 0) {
+          await handleAPI(
+            `/Products/update-sub-product?id=${subId}`,
+            { images: urls.filter((url) => url), ...data },
+            "put"
+          );
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleCancel = () => {
     form.resetFields();

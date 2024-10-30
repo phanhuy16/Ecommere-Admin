@@ -60,6 +60,7 @@ const ProductDetail = () => {
 
   const handleRemoveSubProduct = async (id: string) => {
     const api = `/Products/delete-sub-product?id=${id}`;
+    console.log(api);
     try {
       await handleAPI(api, undefined, "delete");
       message.success("Remove sub product success");
@@ -166,7 +167,7 @@ const ProductDetail = () => {
   ];
 
   return isLoading ? (
-    <Spin />
+    <Spin fullscreen />
   ) : productDetail ? (
     <div className="container">
       <div className="row">
