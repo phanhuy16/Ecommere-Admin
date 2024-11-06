@@ -1,4 +1,9 @@
+import handleAPI from "@/apis/handleAPI";
 import { colors } from "@/constants/color";
+import { FormModel } from "@/models/FormModel";
+import { SupplierModel } from "@/models/SupplierModel";
+import { replaceName } from "@/utils/replaceName";
+import { uploadFile } from "@/utils/uploadFile";
 import {
   Avatar,
   Button,
@@ -9,14 +14,8 @@ import {
   Select,
   Typography,
 } from "antd";
-import { PiUserLight } from "react-icons/pi";
-import { useEffect, useRef, useState } from "react";
-import { uploadFile } from "@/utils/uploadFile";
-import { replaceName } from "@/utils/replaceName";
-import handleAPI from "@/apis/handleAPI";
-import { SupplierModel } from "@/models/SupplierModel";
-import { FormModel } from "@/models/FormModel";
-import FormItem from "@/components/FormItem";
+import { User } from "iconsax-react";
+import { useRef, useState } from "react";
 
 const { Paragraph } = Typography;
 
@@ -31,38 +30,40 @@ const ToogleSupplier = (props: Props) => {
   const { visible, onAddNew, onClose, supplier } = props;
 
   const [isLoading, setIsLoading] = useState(false);
-  const [isGetting, setIsGetting] = useState(false);
+  const [isTaking, setIsTaking] = useState<boolean>();
   const [formData, setFormData] = useState<FormModel>();
-  const [isTalking, setIsTalking] = useState<boolean>();
   const [file, setFile] = useState<any>();
 
   const [form] = Form.useForm();
   const inpRef = useRef<any>();
 
-  useEffect(() => {
-    getFormData();
-  }, []);
+  // useEffect(() => {
+  //   getFormData();
+  // }, []);
 
-  useEffect(() => {
-    if (supplier) {
-      form.setFieldsValue(supplier);
-      setIsTalking(supplier.isTalking === true);
-    }
-  }, [supplier]);
+  // useEffect(() => {
+  //   if (supplier) {
+  //     form.setFieldsValue(supplier);
+  //     setIsTalking(supplier.isTalking === true);
+  //   }
+  // }, [supplier]);
 
   const addNewSupplier = async (values: any) => {
     setIsLoading(true);
 
     const data: any = {};
-    const api = `/Suppliers/${supplier ? `update/${supplier.id}` : "add-new"}`;
+
+    const api = `/Suppliers/${
+      supplier ? `update?id=${supplier.id}` : "add-new"
+    }`;
 
     for (const i in values) {
       data[i] = values[i] ?? "";
     }
 
-    data.category_id = values.category_id ? values.category_id : null;
     data.price = values.price ? parseInt(values.price) : 0;
-    data.isTalking = isTalking ? true : false;
+
+    data.isTalking = isTaking ? true : false;
 
     if (file) {
       data.photoUrl = await uploadFile(file);
@@ -70,14 +71,17 @@ const ToogleSupplier = (props: Props) => {
 
     data.slug = replaceName(values.name);
 
+    data.categories = values.cateogries ?? [];
+
     try {
       const res: any = await handleAPI(api, data, supplier ? "put" : "post");
-      console.log(res);
       if (res.httpStatusCode === 400) {
         message.error(res.message);
       } else {
         message.success(res.message);
-        !supplier && onAddNew(res);
+        if (!supplier) {
+          onAddNew(res.data);
+        }
         handleClose();
       }
     } catch (error) {
@@ -87,18 +91,18 @@ const ToogleSupplier = (props: Props) => {
     }
   };
 
-  const getFormData = async () => {
-    const api = `/Suppliers/get-form`;
-    setIsGetting(true);
-    try {
-      const res: any = await handleAPI(api);
-      res.value.form && setFormData(res.value.form);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsGetting(false);
-    }
-  };
+  // const getFormData = async () => {
+  //   const api = `/Suppliers/get-form`;
+  //   setIsGetting(true);
+  //   try {
+  //     const res: any = await handleAPI(api);
+  //     res.value.form && setFormData(res.value.form);
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setIsGetting(false);
+  //   }
+  // };
 
   const handleClose = () => {
     form.resetFields();
@@ -108,8 +112,8 @@ const ToogleSupplier = (props: Props) => {
 
   return (
     <Modal
-      loading={isGetting}
       closable={!isLoading}
+      width={450}
       open={visible}
       onClose={handleClose}
       onCancel={handleClose}
@@ -117,59 +121,96 @@ const ToogleSupplier = (props: Props) => {
       okButtonProps={{
         loading: isLoading,
       }}
-      title={supplier ? "Update" : "Add Supplier"}
-      okText={supplier ? "Update" : "Add Supplier"}
+      title={supplier ? "Update" : "Add Product"}
+      okText={supplier ? "Update" : "Add Product"}
       cancelText="Discard"
     >
-      <label htmlFor="inpFile" className="p-2 mb-3 d-flex align-items-center">
+      <label htmlFor="inpFile" className="p-2 mb-3 text-center row">
         {file ? (
-          <Avatar size={100} src={URL.createObjectURL(file)} />
-        ) : supplier ? (
-          <Avatar size={100} src={supplier.photoUrl} />
+          <Avatar size={80} src={URL.createObjectURL(file)} />
         ) : (
           <Avatar
-            size={100}
+            size={80}
             style={{
-              backgroundColor: "white",
+              backgroundColor: "transparent",
               border: "1px dashed #e0e0e0",
             }}
           >
-            <PiUserLight size={60} color={colors.gray600} />
+            <User size={40} color={colors.gray600} />
           </Avatar>
         )}
-        <div className="ml-3 text-center">
+        <div className="ml-3">
           <Paragraph className="text-muted m-0">Drag image here</Paragraph>
-          <Paragraph className="text-muted m-0 mt-1">Or</Paragraph>
-          <Button onClick={() => inpRef.current.click()} type="link">
+          <Paragraph className="text-muted m-0">Or</Paragraph>
+          <Button
+            type="link"
+            className="text-muted m-0"
+            onClick={() => inpRef.current.click()}
+          >
             Browse image
           </Button>
         </div>
       </label>
-      {formData && (
-        <Form
-          disabled={isLoading}
-          onFinish={addNewSupplier}
-          layout={formData.layout}
-          labelCol={{ span: formData.labelCol }}
-          wrapperCol={{ span: formData.wrapperCol }}
-          size="middle"
-          form={form}
+
+      <Form
+        onFinish={addNewSupplier}
+        layout="vertical"
+        form={form}
+        disabled={isLoading}
+      >
+        <Form.Item
+          label="Supplier name"
+          name={"name"}
+          rules={[
+            {
+              required: true,
+              message: "Enter supplier name",
+            },
+          ]}
         >
-          {formData.formItem.map((item) => (
-            <FormItem item={item} />
-          ))}
-        </Form>
-      )}
-      <div className="d-none">
-        <input
-          ref={inpRef}
-          accept="image/*"
-          type="file"
-          name=""
-          id="inpFile"
-          onChange={(val: any) => setFile(val.target.files[0])}
-        />
-      </div>
+          <Input placeholder="Enter supplier name" allowClear />
+        </Form.Item>
+        <Form.Item label="Product" name={"products"}>
+          <Input placeholder="Enter product" allowClear />
+        </Form.Item>
+        <Form.Item label="Category" name={"categories"}>
+          <Select
+            options={[]}
+            placeholder="Enter product category"
+            allowClear
+          />
+        </Form.Item>
+        <Form.Item label="Buying Price" name={"price"}>
+          <Input placeholder="Enter buying price" type="number" allowClear />
+        </Form.Item>
+        <Form.Item label="Contact Number" name={"contact"}>
+          <Input placeholder="Enter supplier contact number" allowClear />
+        </Form.Item>
+
+        <Form.Item label="Type">
+          <Button
+            type={isTaking === false ? "primary" : "default"}
+            onClick={() => setIsTaking(false)}
+          >
+            Not taking return
+          </Button>
+          <Button
+            onClick={() => setIsTaking(true)}
+            type={isTaking ? "primary" : "default"}
+            className="ml-4 d-inline-block"
+          >
+            Taking return
+          </Button>
+        </Form.Item>
+      </Form>
+      <input
+        ref={inpRef}
+        className="d-none"
+        type="file"
+        id="inpFile"
+        accept="image/*"
+        onChange={(val: any) => setFile(val.target.files[0])}
+      />
     </Modal>
   );
 };
