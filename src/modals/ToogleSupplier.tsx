@@ -15,7 +15,7 @@ import {
   Typography,
 } from "antd";
 import { User } from "iconsax-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const { Paragraph } = Typography;
 
@@ -41,12 +41,12 @@ const ToogleSupplier = (props: Props) => {
   //   getFormData();
   // }, []);
 
-  // useEffect(() => {
-  //   if (supplier) {
-  //     form.setFieldsValue(supplier);
-  //     setIsTalking(supplier.isTalking === true);
-  //   }
-  // }, [supplier]);
+  useEffect(() => {
+    if (supplier) {
+      form.setFieldsValue(supplier);
+      setIsTaking(supplier.isTalking === true);
+    }
+  }, [supplier, form]);
 
   const addNewSupplier = async (values: any) => {
     setIsLoading(true);
@@ -66,12 +66,14 @@ const ToogleSupplier = (props: Props) => {
     data.isTalking = isTaking ? true : false;
 
     if (file) {
-      data.photoUrl = await uploadFile(file);
+      data.image = await uploadFile(file);
     }
 
     data.slug = replaceName(values.name);
 
     data.categories = values.cateogries ?? [];
+
+    console.log(data);
 
     try {
       const res: any = await handleAPI(api, data, supplier ? "put" : "post");
@@ -128,6 +130,8 @@ const ToogleSupplier = (props: Props) => {
       <label htmlFor="inpFile" className="p-2 mb-3 text-center row">
         {file ? (
           <Avatar size={80} src={URL.createObjectURL(file)} />
+        ) : supplier ? (
+          <Avatar size={80} src={supplier.image} />
         ) : (
           <Avatar
             size={80}
@@ -170,8 +174,14 @@ const ToogleSupplier = (props: Props) => {
         >
           <Input placeholder="Enter supplier name" allowClear />
         </Form.Item>
-        <Form.Item label="Product" name={"products"}>
+        <Form.Item label="Product" name={"product"}>
           <Input placeholder="Enter product" allowClear />
+        </Form.Item>
+        <Form.Item label="Email Address" name={"email"}>
+          <Input placeholder="Enter email" type="email" allowClear />
+        </Form.Item>
+        <Form.Item label="Active" name={"active"}>
+          <Input placeholder="" type="number" allowClear />
         </Form.Item>
         <Form.Item label="Category" name={"categories"}>
           <Select

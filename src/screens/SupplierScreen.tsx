@@ -1,13 +1,23 @@
+import handleAPI from "@/apis/handleAPI";
 import { colors } from "@/constants/color";
 import { ToogleSupplier } from "@/modals";
 import { FormModel } from "@/models/FormModel";
 import { SupplierModel } from "@/models/SupplierModel";
-import { Button, Modal, Space, Table, Typography } from "antd";
+import {
+  Button,
+  message,
+  Modal,
+  Space,
+  Table,
+  Tooltip,
+  Typography,
+} from "antd";
 import { ColumnProps } from "antd/es/table/Column";
-import { Sort } from "iconsax-react";
-import { useState } from "react";
+import { Edit2, Sort, UserRemove } from "iconsax-react";
+import { useEffect, useState } from "react";
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
+const { confirm } = Modal;
 
 const SupplierScreen = () => {
   const [isVisibleModalAddNew, setIsVisibleModalAddNew] = useState(false);
@@ -20,35 +30,126 @@ const SupplierScreen = () => {
   const [isLoadingForms, setIsLoadingForms] = useState(false);
   const [forms, setForms] = useState<FormModel>();
 
-  const { confirm } = Modal;
+  useEffect(() => {
+    getSuppliers();
+  }, []);
 
-  // const getSuppliers = async () => {
-  //   setIsLoading(true);
-  //   const api = `/Suppliers/get-pagination?PageNumber=${page}&PageSize=${pageSize}`;
-  //   try {
-  //     const res: any = await handleAPI(api);
-  //     res.value.data && setSuppliers(res.value.data);
-  //     const items = res.value.data.map(
-  //       (supplier: SupplierModel, index: number) => ({
-  //         ...supplier,
-  //         index: (page - 1) * pageSize + index + 1,
-  //       })
-  //     );
-  //     setSuppliers(items);
-  //     setTotalRecords(totalRecords);
-  //   } catch (error: any) {
-  //     message.error(error.message);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
+  const getSuppliers = async () => {
+    setIsLoading(true);
+    const api = `/Suppliers/get-pagination?PageNumber=${page}&PageSize=${pageSize}`;
+    try {
+      const res: any = await handleAPI(api);
+      if (res.value.data) {
+        setSuppliers(res.value.data);
+      }
+      // const items = res.value.data.map(
+      //   (supplier: SupplierModel, index: number) => ({
+      //     ...supplier,
+      //     index: (page - 1) * pageSize + index + 1,
+      //   })
+      // );
+      // setSuppliers(items);
+      setTotalRecords(totalRecords);
+    } catch (error: any) {
+      message.error(error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  const columns: ColumnProps<SupplierModel>[] = [];
+  const removeSupplier = async (id: string) => {
+    const api = `/Suppliers/delete?id=${id}`;
+
+    setIsLoading(true);
+
+    try {
+      await handleAPI(api, undefined, "delete");
+      getSuppliers();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const columns: ColumnProps<SupplierModel>[] = [
+    {
+      key: "name",
+      title: "Supplier name",
+      dataIndex: "name",
+    },
+    {
+      key: "product",
+      title: "Product",
+      dataIndex: "product",
+    },
+    {
+      key: "contact",
+      title: "Contact",
+      dataIndex: "contact",
+    },
+    {
+      key: "email",
+      title: "Email Address",
+      dataIndex: "email",
+    },
+    {
+      key: "type",
+      title: "Type",
+      dataIndex: "isTalking",
+      render: (isTaking: boolean) => (
+        <Text type={isTaking ? "success" : "danger"}>
+          {isTaking ? "Taking Return" : "Not Taking Return"}
+        </Text>
+      ),
+    },
+    {
+      key: "on",
+      title: "On the way",
+      dataIndex: "active",
+      render: (num) => num ?? "-",
+    },
+    {
+      key: "action",
+      title: "Actions",
+      dataIndex: "",
+      render: (item: SupplierModel) => (
+        <Space>
+          <Tooltip title="Edit">
+            <Button
+              onClick={() => {
+                setSupplierSelected(item);
+                setIsVisibleModalAddNew(true);
+              }}
+              type="text"
+              icon={<Edit2 size={20} className="text-info" />}
+            />
+          </Tooltip>
+          <Tooltip title="Delete">
+            <Button
+              onClick={() =>
+                confirm({
+                  title: "Confirm",
+                  content: "Are you sure you want to remove this supplier?",
+                  onOk: () => removeSupplier(item.id),
+                })
+              }
+              type="text"
+              icon={<UserRemove size={20} className="text-danger" />}
+            />
+          </Tooltip>
+        </Space>
+      ),
+      fixed: "right",
+      align: "center",
+    },
+  ];
 
   return (
     <div>
       <Table
-        dataSource={[]}
+        loading={isLoading}
+        dataSource={suppliers}
         columns={columns}
         title={() => (
           <div className="row">
@@ -75,10 +176,14 @@ const SupplierScreen = () => {
       <ToogleSupplier
         visible={isVisibleModalAddNew}
         onClose={() => {
+          if (supplierSelected) {
+            getSuppliers();
+          }
+          setSupplierSelected(undefined);
           setIsVisibleModalAddNew(false);
         }}
         onAddNew={(val) => {
-          console.log(val);
+          setSuppliers([...suppliers, val]);
         }}
         supplier={supplierSelected}
       />

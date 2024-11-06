@@ -1,6 +1,5 @@
 export interface SupplierModel {
   id: string
-  category_id: string
   name: string
   slug: string
   product: string
@@ -10,7 +9,7 @@ export interface SupplierModel {
   isTalking: boolean
   email: string
   active: number
-  photoUrl: string
+  image: string
   created_at: string
   updated_at: string
   index: number
