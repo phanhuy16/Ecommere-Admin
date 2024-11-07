@@ -12,5 +12,4 @@ export interface SupplierModel {
   image: string
   created_at: string
   updated_at: string
-  index: number
 }

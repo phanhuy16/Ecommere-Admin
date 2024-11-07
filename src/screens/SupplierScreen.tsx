@@ -1,7 +1,6 @@
 import handleAPI from "@/apis/handleAPI";
 import { colors } from "@/constants/color";
 import { ToogleSupplier } from "@/modals";
-import { FormModel } from "@/models/FormModel";
 import { SupplierModel } from "@/models/SupplierModel";
 import {
   Button,
@@ -27,8 +26,6 @@ const SupplierScreen = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalRecords, setTotalRecords] = useState<number>(10);
-  const [isLoadingForms, setIsLoadingForms] = useState(false);
-  const [forms, setForms] = useState<FormModel>();
 
   useEffect(() => {
     getSuppliers();
@@ -42,13 +39,6 @@ const SupplierScreen = () => {
       if (res.value.data) {
         setSuppliers(res.value.data);
       }
-      // const items = res.value.data.map(
-      //   (supplier: SupplierModel, index: number) => ({
-      //     ...supplier,
-      //     index: (page - 1) * pageSize + index + 1,
-      //   })
-      // );
-      // setSuppliers(items);
       setTotalRecords(res.value.totalRecords);
     } catch (error: any) {
       message.error(error.message);
@@ -72,7 +62,21 @@ const SupplierScreen = () => {
     }
   };
 
+  const renderIndex = (id: string) => {
+    const index = suppliers.findIndex((element) => element.id === id);
+
+    return `${(page - 1) * pageSize + index + 1}`;
+  };
+
   const columns: ColumnProps<SupplierModel>[] = [
+    {
+      key: "stt",
+      title: "#",
+      dataIndex: "id",
+      render: (id: string) => renderIndex(id),
+      align: "center",
+      width: 50,
+    },
     {
       key: "name",
       title: "Supplier name",

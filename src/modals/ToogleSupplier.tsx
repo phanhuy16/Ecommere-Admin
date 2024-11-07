@@ -1,6 +1,5 @@
 import handleAPI from "@/apis/handleAPI";
 import { colors } from "@/constants/color";
-import { FormModel } from "@/models/FormModel";
 import { SupplierModel } from "@/models/SupplierModel";
 import { replaceName } from "@/utils/replaceName";
 import { uploadFile } from "@/utils/uploadFile";
@@ -31,15 +30,10 @@ const ToogleSupplier = (props: Props) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isTaking, setIsTaking] = useState<boolean>();
-  const [formData, setFormData] = useState<FormModel>();
   const [file, setFile] = useState<any>();
 
   const [form] = Form.useForm();
   const inpRef = useRef<any>();
-
-  // useEffect(() => {
-  //   getFormData();
-  // }, []);
 
   useEffect(() => {
     if (supplier) {
@@ -73,8 +67,6 @@ const ToogleSupplier = (props: Props) => {
 
     data.categories = values.cateogries ?? [];
 
-    console.log(data);
-
     try {
       const res: any = await handleAPI(api, data, supplier ? "put" : "post");
       if (res.httpStatusCode === 400) {
@@ -92,19 +84,6 @@ const ToogleSupplier = (props: Props) => {
       setIsLoading(false);
     }
   };
-
-  // const getFormData = async () => {
-  //   const api = `/Suppliers/get-form`;
-  //   setIsGetting(true);
-  //   try {
-  //     const res: any = await handleAPI(api);
-  //     res.value.form && setFormData(res.value.form);
-  //   } catch (error) {
-  //     console.log(error);
-  //   } finally {
-  //     setIsGetting(false);
-  //   }
-  // };
 
   const handleClose = () => {
     form.resetFields();
