@@ -9,12 +9,11 @@ import {
   message,
 } from "antd";
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import SocialLogin from "./components/SocialLogin";
-import handleAPI from "../../apis/handleAPI";
 import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
+import handleAPI from "../../apis/handleAPI";
+import { appInfo, localDataNames } from "../../constants/appInfo";
 import { addAuth } from "../../redux/reducres/authReducer";
-import { localDataNames, appInfo } from "../../constants/appInfo";
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -29,17 +28,17 @@ const Login = () => {
     setIsLoading(true);
     try {
       const res: any = await handleAPI("/Account/login", values, "post");
-      if (res.value.isSuccess === false) {
-        message.error(res.value.message);
+      if (res.data.isSuccess === false) {
+        message.error(res.message);
       } else {
-        message.success(res.value.message);
-        if (res.value) {
-          dispatch(addAuth(res.value));
+        message.success(res.message);
+        if (res.data) {
+          dispatch(addAuth(res.data));
         }
       }
 
       if (isRemember) {
-        localStorage.setItem(localDataNames.authData, JSON.stringify(res));
+        localStorage.setItem(localDataNames.authData, JSON.stringify(res.data));
       }
     } catch (error: any) {
       message.error(error.message);
@@ -131,7 +130,6 @@ const Login = () => {
             Login
           </Button>
         </div>
-        <SocialLogin />
         <div className="mt-4 text-center">
           <Space>
             <Text type="secondary">Don’t have an account?</Text>

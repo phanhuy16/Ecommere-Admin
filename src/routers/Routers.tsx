@@ -17,15 +17,23 @@ const Routers = () => {
   }, []);
 
   const getData = async () => {
-    const res = localStorage.getItem(localDataNames.authData);
-    if (res) {
-      dispatch(addAuth(JSON.parse(res)));
+    setIsLoading(true);
+
+    try {
+      const res = localStorage.getItem(localDataNames.authData);
+      if (res) {
+        dispatch(addAuth(JSON.parse(res)));
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return isLoading ? (
     <Spin fullscreen />
-  ) : !auth.token ? (
+  ) : !auth.accessToken ? (
     <AuthRouter />
   ) : (
     <MainRouter />

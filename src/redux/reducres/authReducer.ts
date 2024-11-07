@@ -3,13 +3,13 @@ import { localDataNames } from "@/constants/appInfo";
 import { createSlice } from "@reduxjs/toolkit";
 
 export interface AuthState {
-  token: string,
-  role: string
+  accessToken: string,
+  refreshToken: string,
 }
 
 const initialState = {
-  token: '',
-  role: "Admin"
+  accessToken: '',
+  refreshToken: ''
 }
 
 const authSlice = createSlice({
