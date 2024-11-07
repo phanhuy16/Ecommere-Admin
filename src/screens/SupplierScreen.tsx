@@ -32,7 +32,7 @@ const SupplierScreen = () => {
 
   useEffect(() => {
     getSuppliers();
-  }, []);
+  }, [page, pageSize]);
 
   const getSuppliers = async () => {
     setIsLoading(true);
@@ -49,7 +49,7 @@ const SupplierScreen = () => {
       //   })
       // );
       // setSuppliers(items);
-      setTotalRecords(totalRecords);
+      setTotalRecords(res.value.totalRecords);
     } catch (error: any) {
       message.error(error.message);
     } finally {
@@ -107,7 +107,7 @@ const SupplierScreen = () => {
       key: "on",
       title: "On the way",
       dataIndex: "active",
-      render: (num) => num ?? "-",
+      render: (num: number) => num ?? "-",
     },
     {
       key: "action",
@@ -148,6 +148,19 @@ const SupplierScreen = () => {
   return (
     <div>
       <Table
+        pagination={{
+          showSizeChanger: true,
+          onChange: (current, size) => {
+            setPage(current);
+            setPageSize(size);
+          },
+          total: totalRecords,
+          current: page,
+          pageSize: pageSize,
+        }}
+        scroll={{
+          y: "calc(100vh - 300px)",
+        }}
         loading={isLoading}
         dataSource={suppliers}
         columns={columns}
