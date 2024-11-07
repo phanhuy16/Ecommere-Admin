@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 import handleAPI from "../../apis/handleAPI";
 import { appInfo, localDataNames } from "../../constants/appInfo";
 import { addAuth } from "../../redux/reducres/authReducer";
+import { jwtDecode } from "jwt-decode";
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -28,17 +29,26 @@ const Login = () => {
     setIsLoading(true);
     try {
       const res: any = await handleAPI("/Account/login", values, "post");
-      if (res.data.isSuccess === false) {
-        message.error(res.message);
-      } else {
-        message.success(res.message);
-        if (res.data) {
-          dispatch(addAuth(res.data));
-        }
-      }
+      if (res.data.value) {
+        const accessToken = res.data.value.accessToken;
 
-      if (isRemember) {
-        localStorage.setItem(localDataNames.authData, JSON.stringify(res.data));
+        const decoded: any = jwtDecode(accessToken);
+
+        if (decoded.role === "Admin") {
+          dispatch(addAuth({ ...res.data.value, role: decoded.role }));
+
+          if (isRemember) {
+            localStorage.setItem(
+              localDataNames.authData,
+              JSON.stringify({ ...res.data.value, role: decoded.role })
+            );
+          }
+          message.success("Login successfully.");
+        } else {
+          message.error(
+            "You do not have permission to access this application."
+          );
+        }
       }
     } catch (error: any) {
       message.error(error.message);

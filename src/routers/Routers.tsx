@@ -33,7 +33,7 @@ const Routers = () => {
 
   return isLoading ? (
     <Spin fullscreen />
-  ) : !auth.accessToken ? (
+  ) : !auth.accessToken && !auth.refreshToken ? (
     <AuthRouter />
   ) : (
     <MainRouter />
