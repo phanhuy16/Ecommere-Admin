@@ -21,12 +21,11 @@ export interface FilterProductValue {
 }
 
 interface Props {
-  values: FilterProductValue;
   onFilter: (vals: FilterProductValue) => void;
 }
 
 const FilterProduct = (props: Props) => {
-  const { values, onFilter } = props;
+  const { onFilter } = props;
 
   const [form] = Form.useForm();
 
@@ -110,7 +109,7 @@ const FilterProduct = (props: Props) => {
       size="small"
     >
       {isLoading ? (
-        <Spin fullscreen />
+        <Spin />
       ) : selectDatas ? (
         <>
           <Form form={form} layout="vertical" onFinish={handleFilter}>

@@ -75,3 +75,8 @@ a {
   -moz-box-shadow: 0px 9px 29px -17px rgba(66, 68, 90, 1);
   box-shadow: 0px 9px 29px -17px rgba(66, 68, 90, 1);
 }
+.shadow {
+  -webkit-box-shadow: 0px 9px 29px -17px rgba(66, 68, 90, 1);
+  -moz-box-shadow: 0px 9px 29px -17px rgba(66, 68, 90, 1);
+  box-shadow: 0px 9px 29px -17px rgba(66, 68, 90, 1);
+}

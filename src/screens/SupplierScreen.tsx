@@ -1,9 +1,11 @@
 import handleAPI from "@/apis/handleAPI";
+import { ExportData } from "@/components";
 import { colors } from "@/constants/color";
 import { ToogleSupplier } from "@/modals";
 import { SupplierModel } from "@/models/SupplierModel";
 import {
   Button,
+  Dropdown,
   message,
   Modal,
   Space,
@@ -14,6 +16,7 @@ import {
 import { ColumnProps } from "antd/es/table/Column";
 import { Edit2, Sort, UserRemove } from "iconsax-react";
 import { useEffect, useState } from "react";
+import { PiDownloadLight } from "react-icons/pi";
 
 const { Title, Text } = Typography;
 const { confirm } = Modal;
@@ -184,7 +187,9 @@ const SupplierScreen = () => {
                 <Button icon={<Sort size={20} color={colors.gray600} />}>
                   Filters
                 </Button>
-                <Button type="primary">Download all</Button>
+                <Dropdown dropdownRender={() => <ExportData />}>
+                  <Button icon={<PiDownloadLight size={20} />}>Download</Button>
+                </Dropdown>
               </Space>
             </div>
           </div>

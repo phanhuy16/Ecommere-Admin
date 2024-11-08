@@ -387,9 +387,8 @@ const InventoryScreen = () => {
               placeholder="Search..."
             />
             <Dropdown
-              dropdownRender={(_menu) => (
+              dropdownRender={() => (
                 <FilterProduct
-                  values={{}}
                   onFilter={(vals) => handleFilterProducts(vals)}
                 />
               )}
@@ -432,7 +431,8 @@ const InventoryScreen = () => {
           setIsVisibleAddSubProduct(false);
           setProductSelected(undefined);
         }}
-        onAddNew={async (_val) => {
+        onAddNew={async (val) => {
+          console.log(val);
           await getProducts(
             `/Products/get-pagination?PageNumber=${page}&PageSize=${pageSize}`
           );
