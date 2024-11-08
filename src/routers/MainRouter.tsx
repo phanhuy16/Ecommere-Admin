@@ -4,7 +4,6 @@ import HomeScreen from "@/screens/HomeScreen";
 import {
   AddProduct,
   Categories,
-  CategoryDetail,
   InventoryScreen,
   ManageStoreScreen,
   OrderScreen,
@@ -44,10 +43,6 @@ const MainRouter = () => {
               <Route path="/orders" element={<OrderScreen />} />
               <Route>
                 <Route path="/categories" element={<Categories />} />
-                <Route
-                  path="/categories/detail/:slug"
-                  element={<CategoryDetail />}
-                />
               </Route>
               <Route path="/manage-store" element={<ManageStoreScreen />} />
               <Route path="/promotion" element={<PromotionScreen />} />

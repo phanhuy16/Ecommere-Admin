@@ -1,7 +1,7 @@
 import handleAPI from "@/apis/handleAPI";
 import { AddPromotion } from "@/modals";
 import { PromotionModel } from "@/models/PromotionModel";
-import { Avatar, Button, Modal, Space, Spin, Table } from "antd";
+import { Avatar, Button, message, Modal, Space, Spin, Table } from "antd";
 import { ColumnProps } from "antd/es/table";
 import { Edit2, Trash } from "iconsax-react";
 import { useEffect, useState } from "react";
@@ -27,8 +27,8 @@ const PromotionScreen = () => {
     try {
       const res = await handleAPI(api);
       setPromotions(res.data);
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      message.error(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -41,8 +41,8 @@ const PromotionScreen = () => {
     try {
       await handleAPI(api, undefined, "delete");
       await getPromotions();
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      message.error(error.message);
     }
   };
 

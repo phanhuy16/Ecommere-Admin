@@ -102,8 +102,8 @@ const AddSubProductModal = (props: Props) => {
         message.success("Add success");
         onAddNew(res);
         handleCancel();
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        message.error(error.message);
       } finally {
         setIsLoading(false);
       }
@@ -132,8 +132,8 @@ const AddSubProductModal = (props: Props) => {
           );
         }
       }
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      message.error(error.message);
     }
   };
 

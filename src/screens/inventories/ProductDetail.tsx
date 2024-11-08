@@ -51,8 +51,8 @@ const ProductDetail = () => {
       const res: any = await handleAPI(api);
       setProductDetail(res);
       setSubProduct(res.subProducts);
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      message.error(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -72,8 +72,8 @@ const ProductDetail = () => {
       }
 
       setSubProduct(items);
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      message.error(error.message);
     }
   };
 
@@ -195,7 +195,8 @@ const ProductDetail = () => {
             setProductSelected(undefined);
           }}
           subProduct={subProductSelected}
-          onAddNew={async (_val) => {
+          onAddNew={async (val) => {
+            console.log(val);
             await getProductDetail();
           }}
         />

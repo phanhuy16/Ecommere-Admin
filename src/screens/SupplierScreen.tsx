@@ -1,11 +1,9 @@
 import handleAPI from "@/apis/handleAPI";
-import { ExportData } from "@/components";
 import { colors } from "@/constants/color";
 import { ToogleSupplier } from "@/modals";
 import { SupplierModel } from "@/models/SupplierModel";
 import {
   Button,
-  Dropdown,
   message,
   Modal,
   Space,
@@ -14,6 +12,7 @@ import {
   Typography,
 } from "antd";
 import { ColumnProps } from "antd/es/table/Column";
+import { saveAs } from "file-saver";
 import { Edit2, Sort, UserRemove } from "iconsax-react";
 import { useEffect, useState } from "react";
 import { PiDownloadLight } from "react-icons/pi";
@@ -58,8 +57,8 @@ const SupplierScreen = () => {
     try {
       await handleAPI(api, undefined, "delete");
       getSuppliers();
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      message.error(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -69,6 +68,32 @@ const SupplierScreen = () => {
     const index = suppliers.findIndex((element) => element.id === id);
 
     return `${(page - 1) * pageSize + index + 1}`;
+  };
+
+  const handleExcel = async () => {
+    setIsLoading(true);
+
+    const api = "/Suppliers/export-excel";
+
+    try {
+      const res = await handleAPI(api);
+
+      const byteCharacters = atob(res.data.fileContents);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+
+      // Convert byte array to a blob
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: res.data.contentType });
+
+      saveAs(blob, res.data.fileDownloadName);
+    } catch (error: any) {
+      message.error(error.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const columns: ColumnProps<SupplierModel>[] = [
@@ -187,9 +212,12 @@ const SupplierScreen = () => {
                 <Button icon={<Sort size={20} color={colors.gray600} />}>
                   Filters
                 </Button>
-                <Dropdown dropdownRender={() => <ExportData />}>
-                  <Button icon={<PiDownloadLight size={20} />}>Download</Button>
-                </Dropdown>
+                <Button
+                  icon={<PiDownloadLight size={20} />}
+                  onClick={handleExcel}
+                >
+                  Download
+                </Button>
               </Space>
             </div>
           </div>

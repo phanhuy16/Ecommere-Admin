@@ -1,7 +1,7 @@
 import handleAPI from "@/apis/handleAPI";
 import { listColors } from "@/constants/color";
 import { CategoryModel } from "@/models/Products";
-import { Tag } from "antd";
+import { message, Tag } from "antd";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -19,13 +19,15 @@ const CategoryComponent = (props: Props) => {
   }, [id]);
 
   const getCategoryDetail = async () => {
-    const api = `/Categories/get-by-id/${id}`;
+    const api = `/Categories/get-by-id?id=${id}`;
 
     try {
-      const res: any = await handleAPI(api);
-      res && setCategory(res);
-    } catch (error) {
-      console.log(error);
+      const res = await handleAPI(api);
+      if (res.data) {
+        setCategory(res.data);
+      }
+    } catch (error: any) {
+      message.error(error.message);
     }
   };
 

@@ -80,8 +80,8 @@ const InventoryScreen = () => {
       const item = res.value;
       setProducts(item.data.map((item: any) => ({ ...item, key: item.id })));
       setTotal(item.totalRecords);
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      message.error(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -120,8 +120,8 @@ const InventoryScreen = () => {
         const keys = items.map((item: any) => item.id);
         setSelectedRowKeys(keys);
       }
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      message.error(error.message);
     }
   };
 
@@ -133,8 +133,8 @@ const InventoryScreen = () => {
       const res: any = await handleAPI(api);
 
       setProducts(res);
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      message.error(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -146,8 +146,8 @@ const InventoryScreen = () => {
     try {
       const res: any = await handleAPI(api, vals, "post");
       setProducts(res);
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      message.error(error.message);
     }
   };
 

@@ -4,7 +4,7 @@ import MainRouter from "./MainRouter";
 import { addAuth, authSeletor, AuthState } from "../redux/reducres/authReducer";
 import { useEffect, useState } from "react";
 import { localDataNames } from "../constants/appInfo";
-import { Spin } from "antd";
+import { message, Spin } from "antd";
 
 const Routers = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -24,8 +24,8 @@ const Routers = () => {
       if (res) {
         dispatch(addAuth(JSON.parse(res)));
       }
-    } catch (error) {
-      console.log(error);
+    } catch (error:any) {
+       message.error(error.message);
     } finally {
       setIsLoading(false);
     }

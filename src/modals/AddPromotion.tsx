@@ -101,8 +101,8 @@ const AddPromotion = (props: Props) => {
           );
           onAddNew(res.data);
           handleClose();
-        } catch (error) {
-          console.log(error);
+        } catch (error:any) {
+          message.error(error.message);
         } finally {
           setIsLoading(false);
         }

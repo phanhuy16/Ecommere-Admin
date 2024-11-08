@@ -5,6 +5,7 @@ import {
   Card,
   Empty,
   Form,
+  message,
   Select,
   Slider,
   Space,
@@ -48,8 +49,8 @@ const FilterProduct = (props: Props) => {
     try {
       await getCategories();
       await getFilterValues();
-    } catch (error) {
-      console.log(error);
+    } catch (error:any) {
+     message.error(error.message);
     } finally {
       setIsLoading(false);
     }

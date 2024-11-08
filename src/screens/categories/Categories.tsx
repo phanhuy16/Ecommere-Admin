@@ -4,7 +4,6 @@ import { colors } from "@/constants/color";
 import { TreeModel } from "@/models/FormModel";
 import { CategoryModel } from "@/models/Products";
 import { getTreeValues } from "@/utils/getTreeValues";
-import { replaceName } from "@/utils/replaceName";
 import {
   Button,
   Card,
@@ -20,12 +19,12 @@ import { Edit2, Trash } from "iconsax-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-interface CatDemoProp {
-  title: string;
-  description: string;
-  parentId: string;
-  slug: string;
-}
+// interface CatDemoProp {
+//   title: string;
+//   description: string;
+//   parentId: string;
+//   slug: string;
+// }
 
 const { confirm } = Modal;
 
@@ -60,7 +59,7 @@ const Categories = () => {
         setTreeValues(getTreeValues(res.value.data, true));
       }
     } catch (error: any) {
-      console.log(error);
+      message.error(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -71,17 +70,18 @@ const Categories = () => {
 
     try {
       const res: any = await handleAPI(`/Categories/get-all`);
-      setCategories(getTreeValues(res, false));
-      setTreeValues(getTreeValues(res, true));
-    } catch (error) {
-      console.log(error);
+
+      setCategories(getTreeValues(res.data, false));
+      setTreeValues(getTreeValues(res.data, true));
+    } catch (error: any) {
+      message.error(error.message);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleRemove = async (id: string) => {
-    const api = `/Categories/delete/${id}`;
+    const api = `/Categories/delete?id=${id}`;
 
     try {
       await handleAPI(api, undefined, "delete");
@@ -150,113 +150,11 @@ const Categories = () => {
     },
   ];
 
-  const demoCategories = [
-    {
-      key: "men",
-      title: "Men",
-      child: [
-        "T-Shirts",
-        "Casual Shirts",
-        "Formal Shirts",
-        "Jackets",
-        "Blazers & Coats",
-      ],
-    },
-    {
-      key: "Women",
-      title: "Women",
-      child: [
-        "Kurtas & Suits",
-        "Sarees",
-        "Ethnic Wear",
-        "Lehenga Cholis",
-        "Jackets",
-      ],
-    },
-    {
-      key: "Footwear",
-      title: "Footwear",
-      child: [
-        "Flats",
-        "Casual Shoes",
-        "Heels",
-        "Boots",
-        "Sports Shoes & Floaters",
-      ],
-    },
-    {
-      key: "Kids",
-      title: "Kids",
-      child: [
-        "T-Shirts",
-        "Shirts",
-        "Jeans",
-        "Trousers",
-        "Party Wear",
-        "Innerwear & Thermal",
-        "Track Pants",
-        "Value Pack",
-      ],
-    },
-    {
-      key: "Indian & Festive Wear",
-      title: "Indian & Festive Wear",
-      child: ["Kurtas & Kurta Sets", "Sherwanis"],
-    },
-    {
-      key: "Western Wear",
-      title: "Western Wear",
-      child: ["Dresses", "Jumpsuits"],
-    },
-    {
-      key: "Product Features",
-      title: "Product Features",
-      child: ["360 Product Viewer", "Product with Video"],
-    },
-  ];
-
-  const handleAddDemodata = async () => {
-    demoCategories.forEach(async (cat) => {
-      const data: CatDemoProp = {
-        title: cat.title,
-        parentId: "",
-        slug: replaceName(cat.title),
-        description: "",
-      };
-
-      await handleAddCategory(cat.child, data);
-    });
-  };
-
-  const handleAddCategory = async (child: string[], data: CatDemoProp) => {
-    const api = "/Categories/add-new";
-    try {
-      const res = await handleAPI(api, data, "post");
-      console.log(res);
-      console.log("Add cat done");
-      if (res.data && child.length > 0) {
-        child.forEach(async (title) => {
-          const item = {
-            title,
-            slug: replaceName(title),
-            description: "",
-            parentId: res.data.id,
-          };
-          await handleAPI(api, item, "post");
-          console.log("Add sub cat done");
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return isLoading ? (
     <Spin fullscreen />
   ) : (
     <div>
       <div className="container-fluid">
-        <Button onClick={handleAddDemodata}>Add Demo data</Button>
         <div className="row">
           <div className="col-md-4">
             <Card title={"Add new"}>
@@ -289,16 +187,14 @@ const Categories = () => {
           <div className="col-md-8">
             <Card>
               <Table
-                // pagination={{
-                //   pageSize: 1,
-                //   showSizeChanger: true,
-                //   onChange: (vals) => {
-                //     setPage(vals);
-                //   },
-                //   onShowSizeChange: (val) => {
-                //     console.log(val);
-                //   },
-                // }}
+                pagination={{
+                  onChange: (current, size) => {
+                    setPage(current);
+                    setPageSize(size);
+                  },
+                  current: page,
+                  pageSize: pageSize,
+                }}
                 size="small"
                 dataSource={categories}
                 columns={columns}

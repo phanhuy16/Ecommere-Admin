@@ -78,8 +78,8 @@ const ToogleSupplier = (props: Props) => {
         }
         handleClose();
       }
-    } catch (error) {
-      console.log(error);
+    } catch (error:any) {
+    message.error(error.message);
     } finally {
       setIsLoading(false);
     }

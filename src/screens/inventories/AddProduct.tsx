@@ -93,8 +93,8 @@ const AddProduct = () => {
           setFileList(items);
         }
       }
-    } catch (error) {
-      console.log(error);
+    } catch (error:any) {
+      message.error(error.message);
     }
   };
 
@@ -145,7 +145,7 @@ const AddProduct = () => {
       );
       window.history.back();
     } catch (error: any) {
-      console.log(error);
+      message.error(error.message);
     } finally {
       setIsCreating(false);
     }
@@ -228,7 +228,7 @@ const AddProduct = () => {
               <Editor
                 disabled={isLoading || isCreating}
                 apiKey="rsvkoql7v4bunin8bxgc1xfrstyxh9hixvnqhbcv7wqh6z4i"
-                onInit={(evt, editor) => (editorRef.current = editor)}
+                onInit={(_evt, editor) => (editorRef.current = editor)}
                 initialValue={content !== "" ? content : ""}
                 init={{
                   height: 500,
@@ -368,7 +368,8 @@ const AddProduct = () => {
       <ModalCategory
         visible={isVisibleAddCategory}
         onClose={() => setIsVisibleAddCategory(false)}
-        onAddNew={async (_val) => {
+        onAddNew={async (val) => {
+          console.log(val);
           await getCategories();
         }}
         values={categories}
