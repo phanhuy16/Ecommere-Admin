@@ -20,7 +20,7 @@ const Routers = () => {
     setIsLoading(true);
 
     try {
-      const res = localStorage.getItem(localDataNames.authData);
+      const res = localStorage.getItem(localDataNames.jwt);
       if (res) {
         dispatch(addAuth(JSON.parse(res)));
       }

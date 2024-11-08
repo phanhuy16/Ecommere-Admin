@@ -39,7 +39,7 @@ export const authSeletor = (state: any) => state.authReducer.data;
 
 const syncLocal = (data: any) => {
   localStorage.setItem(
-    localDataNames.authData,
+    localDataNames.jwt,
     JSON.stringify(data)
   );
 }

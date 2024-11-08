@@ -39,7 +39,7 @@ const Login = () => {
 
           if (isRemember) {
             localStorage.setItem(
-              localDataNames.authData,
+              localDataNames.jwt,
               JSON.stringify({ ...res.data.value, role: decoded.role })
             );
           }
