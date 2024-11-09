@@ -79,7 +79,7 @@ const SupplierScreen = () => {
     return `${(page - 1) * pageSize + index + 1}`;
   };
 
-  const handleSearchProducts = async () => {
+  const handleSearchSuppliers = async () => {
     const key = replaceName(searchKey);
     const api = `/Suppliers/search?slug=${key}`;
     setIsLoading(true);
@@ -179,7 +179,6 @@ const SupplierScreen = () => {
     <div>
       <Table
         pagination={{
-          showSizeChanger: true,
           onChange: (current, size) => {
             setPage(current);
             setPageSize(size);
@@ -204,7 +203,7 @@ const SupplierScreen = () => {
                 <Input.Search
                   value={searchKey}
                   onChange={(val) => setSearchKey(val.target.value)}
-                  onSearch={handleSearchProducts}
+                  onSearch={handleSearchSuppliers}
                   placeholder="Search..."
                 />
                 <Button

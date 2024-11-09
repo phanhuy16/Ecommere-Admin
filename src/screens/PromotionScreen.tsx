@@ -2,9 +2,11 @@ import handleAPI from "@/apis/handleAPI";
 import { AddPromotion } from "@/modals";
 import { PromotionModel } from "@/models/PromotionModel";
 import { handleExportExcel } from "@/utils/handleExportExcel";
+import { replaceName } from "@/utils/replaceName";
 import {
   Avatar,
   Button,
+  Input,
   message,
   Modal,
   Space,
@@ -26,10 +28,20 @@ const PromotionScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [promotions, setPromotions] = useState<PromotionModel[]>([]);
   const [promotionSelected, setPromotionSelected] = useState<PromotionModel>();
+  const [searchKey, setSearchKey] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalRecords, setTotalRecords] = useState<number>(10);
+
+  useEffect(() => {
+    if (!searchKey) {
+      getPromotions();
+    }
+  }, [searchKey]);
 
   useEffect(() => {
     getPromotions();
-  }, []);
+  }, [page, pageSize]);
 
   const getPromotions = async () => {
     const api = `/Promotion/get-all`;
@@ -37,10 +49,11 @@ const PromotionScreen = () => {
     setIsLoading(true);
 
     try {
-      const res = await handleAPI(api);
+      const res: any = await handleAPI(api);
       setPromotions(res.data);
+      setTotalRecords(res.value.totalRecords);
     } catch (error: any) {
-      message.error(error.message);
+      message.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -54,7 +67,22 @@ const PromotionScreen = () => {
       await handleAPI(api, undefined, "delete");
       await getPromotions();
     } catch (error: any) {
-      message.error(error.message);
+      message.error(error);
+    }
+  };
+
+  const handleSearchPromotions = async () => {
+    const key = replaceName(searchKey);
+    const api = `/Promotion/search?slug=${key}`;
+    setIsLoading(true);
+    try {
+      const res = await handleAPI(api);
+
+      setPromotions(res.data);
+    } catch (error: any) {
+      message.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -69,6 +97,11 @@ const PromotionScreen = () => {
       key: "title",
       dataIndex: "title",
       title: "Title",
+    },
+    {
+      key: "slug",
+      dataIndex: "slug",
+      title: "Slug",
     },
     {
       key: "desciption",
@@ -135,6 +168,15 @@ const PromotionScreen = () => {
         <>
           <div className="container-fluid">
             <Table
+              pagination={{
+                onChange: (current, size) => {
+                  setPage(current);
+                  setPageSize(size);
+                },
+                total: totalRecords,
+                current: page,
+                pageSize: pageSize,
+              }}
               loading={isLoading}
               columns={columns}
               dataSource={promotions}
@@ -145,6 +187,12 @@ const PromotionScreen = () => {
                   </div>
                   <div className="col text-right">
                     <Space>
+                      <Input.Search
+                        value={searchKey}
+                        onChange={(val) => setSearchKey(val.target.value)}
+                        onSearch={handleSearchPromotions}
+                        placeholder="Search..."
+                      />
                       <Button
                         type="primary"
                         onClick={() => setIsVisibleModalAddPromotion(true)}
@@ -154,7 +202,7 @@ const PromotionScreen = () => {
                       <Button
                         icon={<PiDownloadLight size={20} />}
                         onClick={() =>
-                          handleExportExcel("/Suppliers/export-excel")
+                          handleExportExcel("/Promotion/export-excel")
                         }
                         loading={isLoading}
                       >

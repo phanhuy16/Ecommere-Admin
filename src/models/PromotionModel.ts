@@ -1,6 +1,7 @@
 export interface PromotionModel {
   id: string
   title: string
+  slug: string
   description: string
   code: string
   value: number

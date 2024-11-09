@@ -13,6 +13,7 @@ import {
 } from "antd";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
+import { replaceName } from "@/utils/replaceName";
 
 interface Props {
   visible: boolean;
@@ -87,7 +88,7 @@ const AddPromotion = (props: Props) => {
             ? await uploadFile(imageUpload[0].originFileObj)
             : "";
 
-        console.log(data);
+        data.slug = replaceName(values.title);
 
         const api = `/Promotion/${
           promotion ? `update?id=${promotion.id}` : "add-new"
@@ -101,7 +102,7 @@ const AddPromotion = (props: Props) => {
           );
           onAddNew(res.data);
           handleClose();
-        } catch (error:any) {
+        } catch (error: any) {
           message.error(error.message);
         } finally {
           setIsLoading(false);
