@@ -167,9 +167,9 @@ const AddProduct = () => {
 
   const getCategories = async () => {
     const api = `/Categories/get-all`;
-    const res: any = await handleAPI(api);
+    const res = await handleAPI(api);
 
-    const datas = res;
+    const datas = res.data;
 
     const data = datas.length > 0 ? getTreeValues(datas, true) : [];
     setCategories(data);

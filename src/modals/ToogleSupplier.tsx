@@ -1,6 +1,8 @@
 import handleAPI from "@/apis/handleAPI";
 import { colors } from "@/constants/color";
+import { TreeModel } from "@/models/FormModel";
 import { SupplierModel } from "@/models/SupplierModel";
+import { getTreeValues } from "@/utils/getTreeValues";
 import { replaceName } from "@/utils/replaceName";
 import { uploadFile } from "@/utils/uploadFile";
 import {
@@ -10,7 +12,7 @@ import {
   Input,
   message,
   Modal,
-  Select,
+  TreeSelect,
   Typography,
 } from "antd";
 import { User } from "iconsax-react";
@@ -31,9 +33,14 @@ const ToogleSupplier = (props: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isTaking, setIsTaking] = useState<boolean>();
   const [file, setFile] = useState<any>();
+  const [categories, setCategories] = useState<TreeModel[]>([]);
 
   const [form] = Form.useForm();
   const inpRef = useRef<any>();
+
+  useEffect(() => {
+    getCategories();
+  }, []);
 
   useEffect(() => {
     if (supplier) {
@@ -78,8 +85,8 @@ const ToogleSupplier = (props: Props) => {
         }
         handleClose();
       }
-    } catch (error:any) {
-    message.error(error.message);
+    } catch (error: any) {
+      message.error(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -89,6 +96,15 @@ const ToogleSupplier = (props: Props) => {
     form.resetFields();
     setFile(undefined);
     onClose();
+  };
+
+  const getCategories = async () => {
+    const res = await handleAPI("/Categories/get-all");
+
+    const datas = res.data;
+
+    const data = datas.length > 0 ? getTreeValues(datas, true) : [];
+    setCategories(data);
   };
 
   return (
@@ -163,8 +179,8 @@ const ToogleSupplier = (props: Props) => {
           <Input placeholder="" type="number" allowClear />
         </Form.Item>
         <Form.Item label="Category" name={"categories"}>
-          <Select
-            options={[]}
+          <TreeSelect
+            treeData={categories}
             placeholder="Enter product category"
             allowClear
           />

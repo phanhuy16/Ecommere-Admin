@@ -1,12 +1,24 @@
 import handleAPI from "@/apis/handleAPI";
 import { AddPromotion } from "@/modals";
 import { PromotionModel } from "@/models/PromotionModel";
-import { Avatar, Button, message, Modal, Space, Spin, Table } from "antd";
+import { handleExportExcel } from "@/utils/handleExportExcel";
+import {
+  Avatar,
+  Button,
+  message,
+  Modal,
+  Space,
+  Spin,
+  Table,
+  Typography,
+} from "antd";
 import { ColumnProps } from "antd/es/table";
 import { Edit2, Trash } from "iconsax-react";
 import { useEffect, useState } from "react";
+import { PiDownloadLight } from "react-icons/pi";
 
 const { confirm } = Modal;
+const { Title } = Typography;
 
 const PromotionScreen = () => {
   const [isVisibleModalAddPromotion, setIsVisibleModalAddPromotion] =
@@ -122,15 +134,36 @@ const PromotionScreen = () => {
       ) : (
         <>
           <div className="container-fluid">
-            <div className="mb-4 text-right">
-              <Button onClick={() => setIsVisibleModalAddPromotion(true)}>
-                Add Promotion
-              </Button>
-            </div>
             <Table
               loading={isLoading}
               columns={columns}
               dataSource={promotions}
+              title={() => (
+                <div className="row">
+                  <div className="col">
+                    <Title level={5}>Promotions</Title>
+                  </div>
+                  <div className="col text-right">
+                    <Space>
+                      <Button
+                        type="primary"
+                        onClick={() => setIsVisibleModalAddPromotion(true)}
+                      >
+                        Add Promotion
+                      </Button>
+                      <Button
+                        icon={<PiDownloadLight size={20} />}
+                        onClick={() =>
+                          handleExportExcel("/Suppliers/export-excel")
+                        }
+                        loading={isLoading}
+                      >
+                        Download
+                      </Button>
+                    </Space>
+                  </div>
+                </div>
+              )}
             />
           </div>
         </>

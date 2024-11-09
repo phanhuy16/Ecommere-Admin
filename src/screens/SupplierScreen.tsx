@@ -2,8 +2,11 @@ import handleAPI from "@/apis/handleAPI";
 import { colors } from "@/constants/color";
 import { ToogleSupplier } from "@/modals";
 import { SupplierModel } from "@/models/SupplierModel";
+import { handleExportExcel } from "@/utils/handleExportExcel";
+import { replaceName } from "@/utils/replaceName";
 import {
   Button,
+  Input,
   message,
   Modal,
   Space,
@@ -12,7 +15,6 @@ import {
   Typography,
 } from "antd";
 import { ColumnProps } from "antd/es/table/Column";
-import { saveAs } from "file-saver";
 import { Edit2, Sort, UserRemove } from "iconsax-react";
 import { useEffect, useState } from "react";
 import { PiDownloadLight } from "react-icons/pi";
@@ -28,6 +30,13 @@ const SupplierScreen = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalRecords, setTotalRecords] = useState<number>(10);
+  const [searchKey, setSearchKey] = useState("");
+
+  useEffect(() => {
+    if (!searchKey) {
+      getSuppliers();
+    }
+  }, [searchKey]);
 
   useEffect(() => {
     getSuppliers();
@@ -70,25 +79,14 @@ const SupplierScreen = () => {
     return `${(page - 1) * pageSize + index + 1}`;
   };
 
-  const handleExcel = async () => {
+  const handleSearchProducts = async () => {
+    const key = replaceName(searchKey);
+    const api = `/Suppliers/search?slug=${key}`;
     setIsLoading(true);
-
-    const api = "/Suppliers/export-excel";
-
     try {
       const res = await handleAPI(api);
 
-      const byteCharacters = atob(res.data.fileContents);
-      const byteNumbers = new Array(byteCharacters.length);
-      for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i);
-      }
-
-      // Convert byte array to a blob
-      const byteArray = new Uint8Array(byteNumbers);
-      const blob = new Blob([byteArray], { type: res.data.contentType });
-
-      saveAs(blob, res.data.fileDownloadName);
+      setSuppliers(res.data);
     } catch (error: any) {
       message.error(error.message);
     } finally {
@@ -191,7 +189,7 @@ const SupplierScreen = () => {
           pageSize: pageSize,
         }}
         scroll={{
-          y: "calc(100vh - 300px)",
+          y: "calc(100vh - 340px)",
         }}
         loading={isLoading}
         dataSource={suppliers}
@@ -203,6 +201,12 @@ const SupplierScreen = () => {
             </div>
             <div className="col text-right">
               <Space>
+                <Input.Search
+                  value={searchKey}
+                  onChange={(val) => setSearchKey(val.target.value)}
+                  onSearch={handleSearchProducts}
+                  placeholder="Search..."
+                />
                 <Button
                   type="primary"
                   onClick={() => setIsVisibleModalAddNew(true)}
@@ -214,7 +218,8 @@ const SupplierScreen = () => {
                 </Button>
                 <Button
                   icon={<PiDownloadLight size={20} />}
-                  onClick={handleExcel}
+                  onClick={() => handleExportExcel("/Suppliers/export-excel")}
+                  loading={isLoading}
                 >
                   Download
                 </Button>
