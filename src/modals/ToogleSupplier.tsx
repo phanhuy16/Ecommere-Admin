@@ -63,6 +63,7 @@ const ToogleSupplier = (props: Props) => {
     }
 
     data.price = values.price ? parseInt(values.price) : 0;
+    data.active = values.active ? parseInt(values.active) : 0;
 
     data.isTalking = isTaking ? true : false;
 
@@ -72,7 +73,13 @@ const ToogleSupplier = (props: Props) => {
 
     data.slug = replaceName(values.name);
 
-    data.categories = values.cateogries ?? [];
+    data.supplierCategory = values.categories
+      ? [{ categoryId: values.categories }]
+      : [];
+
+    data.id = supplier?.id;
+
+    console.log(data);
 
     try {
       const res: any = await handleAPI(api, data, supplier ? "put" : "post");

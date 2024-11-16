@@ -2,14 +2,15 @@ export interface SupplierModel {
   id: string
   name: string
   slug: string
-  product: string
-  category: string[]
   price: number
+  product: string
   contact: string
   isTalking: boolean
   email: string
   active: number
   image: string
-  created_at: string
-  updated_at: string
+  createdAt: string
+  updatedAt: string
+  supplierCategory: any[]
+  products: any[]
 }

@@ -24,8 +24,8 @@ const Routers = () => {
       if (res) {
         dispatch(addAuth(JSON.parse(res)));
       }
-    } catch (error:any) {
-       message.error(error.message);
+    } catch (error: any) {
+      message.error(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -33,7 +33,7 @@ const Routers = () => {
 
   return isLoading ? (
     <Spin fullscreen />
-  ) : !auth.accessToken && !auth.refreshToken ? (
+  ) : !auth.accessToken ? (
     <AuthRouter />
   ) : (
     <MainRouter />

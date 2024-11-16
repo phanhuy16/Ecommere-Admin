@@ -1,4 +1,5 @@
 import handleAPI from "@/apis/handleAPI";
+import CategoryComponent from "@/components/CategoryComponent";
 import { colors } from "@/constants/color";
 import { ToogleSupplier } from "@/modals";
 import { SupplierModel } from "@/models/SupplierModel";
@@ -93,6 +94,7 @@ const SupplierScreen = () => {
       setIsLoading(false);
     }
   };
+  console.log(suppliers);
 
   const columns: ColumnProps<SupplierModel>[] = [
     {
@@ -122,6 +124,19 @@ const SupplierScreen = () => {
       key: "email",
       title: "Email Address",
       dataIndex: "email",
+    },
+    {
+      key: "categories",
+      dataIndex: "supplierCategory",
+      title: "Categories",
+      render: (ids: any[]) => (
+        <Space wrap key={"category"}>
+          {ids.map((id, index) => (
+            <CategoryComponent id={id?.category.id} key={index} />
+          ))}
+        </Space>
+      ),
+      width: 200,
     },
     {
       key: "type",

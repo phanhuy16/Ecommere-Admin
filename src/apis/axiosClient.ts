@@ -1,6 +1,7 @@
 import axios from "axios";
 import queryString from "query-string";
 import { localDataNames } from "../constants/appInfo";
+import { jwtDecode } from "jwt-decode";
 
 const baseURL = 'http://localhost:5027/api';
 
@@ -28,24 +29,14 @@ axiosClient.interceptors.request.use(async (config: any) => {
     ...config.headers,
   };
 
-  return { ...config, data: config.data ?? null };
-})
+  const decoded: any = jwtDecode(accesstoken);
 
-axiosClient.interceptors.response.use(res => {
-  if (res.data && res.status >= 200 && res.status < 300) {
-    return res.data;
-  } else {
-    return Promise.reject(res.data);
-  }
-}, async error => {
-  const { response, config } = error;
-
-  if (response && response.data === 401) {
+  if (decoded.role === null) {
     const refreshtoken = getRefreshToken();
 
     if (refreshtoken) {
       try {
-        const refresh: any = await axios.post(`${baseURL}/Account/refresh-token`, { refreshtoken })
+        const refresh: any = await axios.post(`${baseURL}/Account/refresh-token`, { refreshToken: refreshtoken })
 
         const { accessToken, refreshToken: refreshToken } = refresh.data;
 
@@ -62,6 +53,17 @@ axiosClient.interceptors.response.use(res => {
     }
   }
 
+  return { ...config, data: config.data ?? null };
+})
+
+axiosClient.interceptors.response.use(res => {
+  if (res.data && res.status >= 200 && res.status < 300) {
+    return res.data;
+  } else {
+    return Promise.reject(res.data);
+  }
+}, error => {
+  const { response } = error;
   return Promise.reject(response.data);
 
 });

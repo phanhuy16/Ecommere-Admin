@@ -135,8 +135,6 @@ const AddProduct = () => {
       data.images = [...urls, ...uploadedUrls.filter((url) => url)];
     }
 
-    console.log(data);
-
     try {
       await handleAPI(
         `/Products/${id ? `update/${id}` : "add-new"}`,
