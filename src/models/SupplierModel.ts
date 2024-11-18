@@ -11,6 +11,19 @@ export interface SupplierModel {
   image: string
   createdAt: string
   updatedAt: string
-  supplierCategory: any[]
+  categoryId: string
+  category: Category
   products: any[]
+}
+
+export interface Category {
+  id: string
+  title: string
+  slug: string
+  parentId: any
+  description: string
+  createdAt: string
+  updatedAt: string
+  products: any[]
+  suppliers: any[]
 }

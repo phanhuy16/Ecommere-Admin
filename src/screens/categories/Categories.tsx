@@ -150,40 +150,50 @@ const Categories = () => {
     },
   ];
 
-  return isLoading ? (
-    <Spin fullscreen />
-  ) : (
+  return (
     <div>
       <div className="container-fluid">
         <div className="row">
           <div className="col-md-4">
-            <Card title={"Add new"}>
-              <AddCategory
-                onClose={() => setCategorySelected(undefined)}
-                seleted={categorySelected}
-                values={treeValues}
-                onAddNew={async (val) => {
-                  if (categorySelected) {
-                    const items = [...categories];
-                    const index = items.findIndex(
-                      (element) => element.id === categorySelected.id
-                    );
-                    if (index !== -1) {
-                      items[index] = val;
-                    }
-                    setCategories(items);
-                    setCategorySelected(undefined);
-                    await getCategories(`/Categories/get-pagination`, true);
-                    await getAllCategories();
-                  } else {
-                    await getCategories(
-                      `/Categories/get-pagination?PageNumber=${page}&PageSize=${pageSize}`
-                    );
-                  }
+            {isLoading ? (
+              <Spin
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  top: "20%",
                 }}
               />
-            </Card>
+            ) : (
+              <Card title={"Add new"}>
+                <AddCategory
+                  onClose={() => setCategorySelected(undefined)}
+                  seleted={categorySelected}
+                  values={treeValues}
+                  onAddNew={async (val) => {
+                    if (categorySelected) {
+                      const items = [...categories];
+                      const index = items.findIndex(
+                        (element) => element.id === categorySelected.id
+                      );
+                      if (index !== -1) {
+                        items[index] = val;
+                      }
+                      setCategories(items);
+                      setCategorySelected(undefined);
+                      await getCategories(`/Categories/get-pagination`, true);
+                      await getAllCategories();
+                    } else {
+                      await getCategories(
+                        `/Categories/get-pagination?PageNumber=${page}&PageSize=${pageSize}`
+                      );
+                    }
+                  }}
+                />
+              </Card>
+            )}
           </div>
+
           <div className="col-md-8">
             <Card>
               <Table
@@ -198,6 +208,7 @@ const Categories = () => {
                 size="small"
                 dataSource={categories}
                 columns={columns}
+                loading={isLoading}
               />
             </Card>
           </div>

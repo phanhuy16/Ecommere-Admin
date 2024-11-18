@@ -112,8 +112,8 @@ const AddProduct = () => {
 
     data.slug = replaceName(values.title);
 
-    data.productCategories = values.categories?.length
-      ? values.categories.map((categoryId: any) => ({ categoryId }))
+    data.productCategories = values.categories
+      ? [{ categoryId: values.categories }]
       : [];
 
     const urls: string[] = [];
@@ -135,9 +135,11 @@ const AddProduct = () => {
       data.images = [...urls, ...uploadedUrls.filter((url) => url)];
     }
 
+    console.log(data);
+
     try {
       await handleAPI(
-        `/Products/${id ? `update/${id}` : "add-new"}`,
+        `/Products/${id ? `update?id=${id}` : "add-new"}`,
         data,
         id ? "put" : "post"
       );
@@ -153,7 +155,7 @@ const AddProduct = () => {
     const api = "/Suppliers/get-all";
     const res = await handleAPI(api);
 
-    const data: any = res;
+    const data: any = res.data;
 
     const options = data.map((item: any) => ({
       value: item.id,

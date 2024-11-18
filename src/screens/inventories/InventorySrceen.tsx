@@ -77,7 +77,7 @@ const InventoryScreen = () => {
 
     try {
       const res: any = await handleAPI(api);
-      const item = res.value;
+      const item = res.data.value;
       setProducts(item.data.map((item: any) => ({ ...item, key: item.id })));
       setTotal(item.totalRecords);
     } catch (error: any) {
@@ -88,7 +88,7 @@ const InventoryScreen = () => {
   };
 
   const handleRemoveProduct = async (id: string) => {
-    const api = `/Products/delete/${id}`;
+    const api = `/Products/delete?id=${id}`;
 
     try {
       await handleAPI(api, undefined, "delete");
@@ -114,7 +114,7 @@ const InventoryScreen = () => {
     try {
       const res: any = await handleAPI("/Products/get-all");
 
-      const items = res;
+      const items = res.data;
 
       if (items.length > 0) {
         const keys = items.map((item: any) => item.id);
@@ -127,7 +127,7 @@ const InventoryScreen = () => {
 
   const handleSearchProducts = async () => {
     const key = replaceName(searchKey);
-    const api = `/Products/${key}`;
+    const api = `/Products/search?slug=${key}`;
     setIsLoading(true);
     try {
       const res: any = await handleAPI(api);

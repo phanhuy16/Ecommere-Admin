@@ -94,6 +94,7 @@ const SupplierScreen = () => {
       setIsLoading(false);
     }
   };
+
   console.log(suppliers);
 
   const columns: ColumnProps<SupplierModel>[] = [
@@ -127,13 +128,11 @@ const SupplierScreen = () => {
     },
     {
       key: "categories",
-      dataIndex: "supplierCategory",
+      dataIndex: "category",
       title: "Categories",
-      render: (ids: any[]) => (
-        <Space wrap key={"category"}>
-          {ids.map((id, index) => (
-            <CategoryComponent id={id?.category.id} key={index} />
-          ))}
+      render: (ids: any) => (
+        <Space key={"category"}>
+          <CategoryComponent id={ids.id} />
         </Space>
       ),
       width: 200,

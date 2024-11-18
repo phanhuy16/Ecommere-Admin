@@ -27,6 +27,7 @@ const Login = () => {
 
   const handleLogin = async (values: { email: string; password: string }) => {
     setIsLoading(true);
+
     try {
       const res: any = await handleAPI("/Account/login", values, "post");
       if (res.data.value) {
@@ -50,8 +51,8 @@ const Login = () => {
           );
         }
       }
-    } catch (error: any) {
-      message.error(error.message);
+    } catch (error) {
+      console.log(error);
     } finally {
       setIsLoading(false);
     }

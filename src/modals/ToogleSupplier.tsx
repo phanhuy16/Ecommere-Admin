@@ -73,9 +73,7 @@ const ToogleSupplier = (props: Props) => {
 
     data.slug = replaceName(values.name);
 
-    data.supplierCategory = values.categories
-      ? [{ categoryId: values.categories }]
-      : [];
+    data.categoryId = values.categories;
 
     data.id = supplier?.id;
 
@@ -83,6 +81,7 @@ const ToogleSupplier = (props: Props) => {
 
     try {
       const res: any = await handleAPI(api, data, supplier ? "put" : "post");
+      console.log(res);
       if (res.httpStatusCode === 400) {
         message.error(res.message);
       } else {
@@ -92,8 +91,8 @@ const ToogleSupplier = (props: Props) => {
         }
         handleClose();
       }
-    } catch (error: any) {
-      message.error(error.message);
+    } catch (error) {
+      console.log(error);
     } finally {
       setIsLoading(false);
     }
